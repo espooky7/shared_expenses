@@ -39,7 +39,21 @@ def calculate_expenses(data):
 	em_owe = total_expenses/2 - em_exp_paid - em_paid_even + zhen_paid_even
 	zhen_owe = total_expenses/2 - zhen_exp_paid - zhen_paid_even + em_paid_even
 
+	em_owe = round(em_owe,2)
+	zhen_owe = round(zhen_owe,2)
+
 	return em_owe, zhen_owe
+
+
+def update_file(data, result):
+
+	i = len(data) - 1
+
+	if math.isnan(data.Em_owes[i]):
+		data['Em_owes'].loc[i] = result[0]
+		data['Zhen_owes'].loc[i] = result[1]
+
+	return data
 
 
 def print_result(result):
@@ -47,10 +61,10 @@ def print_result(result):
 	zhenya_owes = round(result[1],2)
 
 	if emily_owes > 0:
-		print "Emily owes Zhenya $%f" % emily_owes
+		print "Emily owes Zhenya $%s" % repr(emily_owes)
 
 	if zhenya_owes > 0:
-		print "Zhenya owes Emily $%f" % zhenya_owes
+		print "Zhenya owes Emily $%s" % repr(zhenya_owes)
 
 	return
 
@@ -65,6 +79,8 @@ def main(argvs):
 
 	print_result(balance)
 
+	data = update_file(data, balance)
+
 	write_data(data, wd, persistent_file)
 
 
@@ -74,5 +90,6 @@ if __name__ == "__main__":
 	import numpy as np
 	import datetime as dt
 	import os
+	import math
 
 	main(sys.argv)
