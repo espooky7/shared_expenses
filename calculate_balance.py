@@ -45,6 +45,11 @@ def calculate_expenses(data):
 	return em_owe, zhen_owe
 
 
+def add_new_row(data, new_row):
+	data = data.append(new_row, ignore_index = True)
+	return data
+
+
 def update_file(data, result):
 
 	i = len(data) - 1
@@ -75,6 +80,15 @@ def main(argvs):
 
 	data = import_data(wd, persistent_file)
 
+	add_new = raw_input("Would you like to add a new entry? y/n: ")
+	
+	if add_new == "y":
+		new_row = new.get_new_row()
+		check = new.verify(new_row)
+		if check == 0:
+			main(sys.argv)
+		data = add_new_row(data, new_row)
+
 	balance = calculate_expenses(data)
 
 	print_result(balance)
@@ -87,9 +101,9 @@ def main(argvs):
 if __name__ == "__main__":
 	import sys
 	import pandas as pd
-	import numpy as np
 	import datetime as dt
 	import os
 	import math
+	import input_new as new
 
 	main(sys.argv)
