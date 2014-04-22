@@ -6,14 +6,17 @@ from datetime import datetime as dt
 
 def get_new_row():
 	"""
-	Ask user for new input
+	Define a new dictionary for the new row and ask the user for the values using raw_input
 	"""
 	new_row = {}
-	n = dt.now()
 
+	#Create and enter timestamp for the new entry
+	n = dt.now()
+	new_row['Date'] = n.strftime("%Y-%m-%d %H:%M:%S")
+	
 	print "\nPlease enter the data for the new row below: \n"
 
-	new_row['Date'] = n.strftime("%Y-%m-%d %H:%M:%S")
+	#Ask who paid, make sure it is a valid entry (sys.exit if not)
 	paid = raw_input("Who paid? Emily [e] or Zhenya [z]?: ")
 
 	if paid == 'E' or paid == 'e':
@@ -24,6 +27,7 @@ def get_new_row():
 		print "Invalid input! Please restart."
 		sys.exit(1)
 
+	#Ask what type of expense it is, make sure it's valid
 	type_exp = raw_input("What type of payment is it? Expense [exp], Emily paying Zhenya [ez], or Zhenya paying Emily [ze]?: ")
 
 	if type_exp == 'exp':
@@ -36,6 +40,7 @@ def get_new_row():
 		print "Invalid input! Please restart."
 		sys.exit(1)
 
+	#Ask for cost and brief description
 	new_row['Cost'] = float(raw_input("How much was paid?: "))
 	new_row['Description'] = raw_input("Please briefly describe the expense: ")
 
@@ -43,6 +48,10 @@ def get_new_row():
 
 
 def verify(new_row):
+	'''
+	Ask the user to verify the new information before moving forward in the main file.
+	Returns a 1 when the information is verified, 0 if it isn't.
+	'''
 	print "Please verify the information is correct:\nDate: %s\nPaid by: %s\nType of payment: %s\nCost: %s \nDescription: %s\n" % (new_row['Date'], new_row['Paid_by'], new_row['Type'], new_row['Cost'], new_row['Description'])
 
 	verify = raw_input("Is this correct? y/n: ")
