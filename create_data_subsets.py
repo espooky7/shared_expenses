@@ -1,3 +1,30 @@
+#!/usr/bin/python
+
+def parse_args(argv):
+	arg_parser = argparse.ArgumentParser(
+		description = '''
+		Generate subsets of data for training and testing models.
+        '''
+    )
+	arg_parser.add_argument(
+		'-s', '--size',
+		default = 5000,
+		help = 'How many rows do you want in your subsets? (default = 5,000)'
+	)
+	arg_parser.add_argument(
+		'-n', '--number_sets',
+		default = 10,
+		help = 'How many separate subsets do you want to generate? These will \
+		each go in a separate csv. (default = 10)'
+	)
+	arg_parser.add_argument(
+		'-f', '--filename',
+		help = 'Name of the file that contains the full data set.'
+	)
+	args = arg_parser.parse_args()
+
+	return args
+
 
 def import_data(filename, wd):
 	"""
@@ -26,20 +53,20 @@ def random_samples(data, n_data, n_samples):
 	return data_dict
 
 
-def write_files(data_dict, n_samples, month, wd):
+def write_files(data_dict, n_samples, wd):
 	"""
 	Writes a .csv file for each of the random samples taken. 
 	"""
 	
 	for i in range(1, n_samples+1):
-		file_name = '2014-04-29_sample_' + month + '_%d' % i + '.csv'
+		file_name = str(d.today()) + '_%d' % i + '.csv'
 		file_path = os.path.join(wd, file_name)
 		data_dict[i].to_csv(file_path, index=False)
 
 	return
 
 
-def main():
+def main(argv):
 
 	"""
 	This is where you define your variables - the filepath for both the raw datasets and where
@@ -51,21 +78,25 @@ def main():
 	File could be generalized with argvs set to find the raw data, and size of samples.
 	"""
 
+	args = parse_args(argv)
+
+	file_name = str(args.filename)
+	sample_size = int(args.size)
+	num_samples = int(args.number_sets)
+
+	print "Subsetting your file %s into %d samples of %d rows..." % (file_name\
+		, num_samples, sample_size)
+
 	wd = '/Users/emily.dahlberg/Documents/ad_hoc/CSVs/'
-	n_data = 5000
-	n_samples = 10
 
-	january = import_data('2014-04-29_january_newuser.csv', wd)
-	february = import_data('2014-04-29_february_newuser.csv', wd)
-	march = import_data('2014-04-29_march_newuser.csv', wd)
+	full_data = import_data(file_name, wd)
 
-	january_samples = random_samples(january, n_data, n_samples)
-	february_samples = random_samples(february, n_data, n_samples)
-	march_samples = random_samples(march, n_data, n_samples)
+	samples = random_samples(full_data, sample_size, num_samples)
 
-	write_files(january_samples, n_samples, 'january', wd)
-	write_files(february_samples, n_samples, 'february', wd)
-	write_files(march_samples, n_samples, 'march', wd)
+	print "Saving new subsets as csv files in %s" % wd
+	write_files(samples, num_samples, wd)
+
+	print "Complete!"
 
 
 if __name__ == '__main__':
@@ -73,5 +104,7 @@ if __name__ == '__main__':
 	import pandas as pd
 	import random as rand
 	import os
+	from datetime import date as d
+	import argparse
 
-	main()
+	main(sys.argv)
