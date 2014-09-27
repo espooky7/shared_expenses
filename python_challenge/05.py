@@ -24,21 +24,26 @@ def loop_for_numbers(url_base, starting_no, i, key_dict):
 	number = starting_no
 	still_going = True
 
+	# The clue says no more than 400 iterations are needed, so that is thrown in as a safety catch for the while
 	while((i < 400) & (still_going)):
 		response = url.urlopen(base_url + number)
 		clue = response.read()
 		key_dict[i] = number
 
+		# Escape the loop as soon as we get to a different type of message
 		if 'and the next nothing is' not in clue:
 			still_going = False
 			break
 
+		#Grab the next number from the message on the page, but only any numbers that come after
+		# the statement 'and the next nothing is' since he tricks you at one point.
 		catch = re.search('the next nothing is [0-9]+', clue).group()
-		number = catch[len('the next nothing is '):] #grab just the number that comes after the statement
+		number = catch[len('the next nothing is '):]
 		
 		#Give some sort of progress indicator, but not for every i, because that's too many!
 		if i % 10 == 0:
 			print i
+
 		i += 1
 
 	return clue, number, i, key_dict
