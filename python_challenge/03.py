@@ -1,47 +1,42 @@
-#!/usr/bin/python
 
-def read_jibberish(filename):
+def import_chunk(filename):
 	"""
-	Since the string is so huge, I saved it in another text file and read it in.
-	Not sure if supposed to, but remove line breaks.
+	Again, read in the block of text, saved in a separate txt file.
+	Remove \n and \t before returning the string.
 	"""
-	text_file = open(filename,'r')
-	text = text_file.read()
-	text = text.replace('\n','')
-	text_file.close()
+	file_obj = open(filename, 'r')
+	text = file_obj.read()
+	text = text.replace('\n', '')
+	text = text.replace(' ','')
+	file_obj.close()
 
-	return text 
+	return text
 
 
-def find_counts(string):
+def find_pattern(string, regex):
 	"""
-	Define an array of the unique characters in the set.
+	The challenge states 'one small letter, surrounded by exactly three big bodyguards.
+	Therefore the sequence should be oOOOoOOOo. Look for this pattern, and return the 
+	middle value, which is the letter needed for the answer. Then join these letters together
+	and return the final answer!
 	"""
-	#set_chars = list(set(string)) # Not preserving order
-	#char_count = dict.fromkeys(set_chars)
-
-	set_chars = col.OrderedDict.fromkeys(string)
-
-	for i in set_chars.iterkeys():
-		set_chars[i] = string.count(i)
-
-	return set_chars 
-
-
-def find_rare_chars(dict_counts):
-	rare_chars = []
-
-	for i in dict_counts.iterkeys():
-		if dict_counts[i] == 1:
-			rare_chars.append(i)
-
-	word = ''.join(rare_chars)
-	return word
+	found = regex.finditer(string)
+	results = list()
+	for match in found:
+		chunk = match.group()
+		letter = chunk[4]
+		results.append(letter)
+	
+	answer = ''.join(results)					
+	return answer
 
 
-import collections as col 
-jibberish = read_jibberish('03_jibberish.txt')
-counts = find_counts(jibberish)
-rare_characters = find_rare_chars(counts)
+import re
+# Define RegExp that looks for a lower case, followed by exactly 3 upper case, 1 lower case,
+# three more Upper, and one more lower
 
-print rare_characters
+text = import_chunk('04_jibberish.txt')
+expression = re.compile(r'([a-z][A-Z]{3}){2}([a-z])')
+answer = find_pattern(text, expression)
+
+print answer
