@@ -40,7 +40,7 @@ def find_rare_chars(dict_counts):
 
 
 import collections as col 
-jibberish = read_jibberish('03_jibberish.txt')
+jibberish = read_jibberish('02_jibberish.txt')
 counts = find_counts(jibberish)
 rare_characters = find_rare_chars(counts)
 

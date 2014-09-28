@@ -35,7 +35,7 @@ import re
 # Define RegExp that looks for a lower case, followed by exactly 3 upper case, 1 lower case,
 # three more Upper, and one more lower
 
-text = import_chunk('04_jibberish.txt')
+text = import_chunk('03_jibberish.txt')
 expression = re.compile(r'([a-z][A-Z]{3}){2}([a-z])')
 answer = find_pattern(text, expression)
 
